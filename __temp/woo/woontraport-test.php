@@ -2,10 +2,15 @@
 /*----------OBJECTIVES-----------
 1. Establish Woo Connection
 2. Set Filters
-   Date/time of order created/updated
+   2.1 Date/time of order created/updated
 3. Get Woo Data
-4. Pass woo data to ontra
-5. establish Ontra connection and pass the data 
+4. Pass woo customer email data to ontra search module
+   4.1 return ontra contact id from search
+5. Run Ontra Sale Module by giving contact id from search
+and order details of woo.
+
+*** ideally find out how to create a listener for new orders in woo
+so that it will be automatically added to ontraport
 -------------------------------*/
 
 require_once( 'lib/woocommerce-api.php' );
@@ -46,6 +51,46 @@ STRING;
 	curl_close($session);
 }
 
+function ontra_search($email){
+	$email = "aresproj3ct@gmail.com"
+	$data = <<<STRING
+<search>
+	<equation>
+		<field>E-mail</field>
+		<op>c</op>
+		<value> . "" . </value>
+	</equation>
+</search>
+STRING;
+
+$data = urlencode(urlencode($data));
+
+// Replace the strings with your API credentials located in Admin > OfficeAutoPilot API Instructions and Key Manager
+$appid = "2_26778_uRluSOFwD";
+$key = "Ffb5u9ypIWGHeg6";
+
+$reqType = "search";
+$postargs = "appid=".$appid."&key=".$key."&reqType=".$reqType."&data=".$data;
+$request = "http://api.ontraport.com/cdata.php";
+
+$session = curl_init($request);
+curl_setopt ($session, CURLOPT_POST, true);
+curl_setopt ($session, CURLOPT_POSTFIELDS, $postargs);
+curl_setopt ($session, CURLOPT_HEADER, false);
+curl_setopt ($session, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($session);
+$header=substr($response,0,curl_getinfo($session,CURLINFO_HEADER_SIZE));
+$body=substr($response,curl_getinfo($session,CURLINFO_HEADER_SIZE));
+
+echo $header;
+echo "<br />";
+echo $body;
+echo "<br />";
+echo $response; //display the result;
+
+curl_close($session);
+}
+
 try {
 
 	$client = new WC_API_Client( 'http://sandbox2.strachanonline.com', 'ck_c1c9fea015d2da2291331f32d03950ad', 'cs_b2a193a9a1b2c2dae3d248d770efd911', $options );
@@ -64,18 +109,7 @@ try {
 	echo "Datum is " . count($datum->orders);
 	echo "Array is " . count($array['orders']);
 	echo "<br />";
-	//print_r($datum);
-	/*if(is_array($array)){
-		echo "array is an array <br />";
-	} 
-	if(is_array($datum)) echo "datum ay Array pala"; else echo "datum ay object talaga to <br />";
-	;
-	$count = count($datum);*/
-	/*for($i=0; $i < count($datum->orders); $i++){
-		echo "ID:" . $datum->orders[$i]->id . "<br />";
-		echo "Status:" . $datum->orders[$i]->status . "<br />";
-		echo "Order Number:" . $datum->orders[$i]->order_number . "<br />";
-	}*/
+	
 	foreach($datum->orders as $orders => $val){
 		//print_r($orders);
 		print_r("ID: " . $val->id . "<br />");
