@@ -38,12 +38,12 @@ $response = curl_exec($session);
 $header=substr($response,0,curl_getinfo($session,CURLINFO_HEADER_SIZE));
 $body=substr($response,curl_getinfo($session,CURLINFO_HEADER_SIZE));
 
-echo $header;
-echo "<br />";
-echo $body;
-echo "<br />";
+//echo $header;
+//echo "<br />";
+//echo $body;
+//echo "<br />";
 //echo $response; //display the result;
-echo "<br />";
+//echo "<br />";
 //echo gettype($response);
 
 $xml = simplexml_load_string($response);
@@ -51,8 +51,7 @@ $xml = simplexml_load_string($response);
 
 
  //prints "55555"
-print_r($xml);
-echo "<br /> OVER HERE ----- <br />";
+//echo "<br /> OVER HERE ----- <br />";
 print_r(xml_attribute($xml->contact, 'id'));
 curl_close($session);
 
