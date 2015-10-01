@@ -73,3 +73,24 @@ function run_plugin_name() {
 
 }
 run_plugin_name();
+
+/*ACTUAL TEST CODE*/
+
+/**
+ * Check if WooCommerce is active
+ **/
+if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+    add_action( 'woocommerce_order_status_completed', 'woopala' );
+	/*
+	 * Do something after WooCommerce sets an order on completed
+	 */
+	function woopala() {
+		
+		$class = "updated";
+		$message = "Kumbaya La Banana";
+        echo"<div class=\"$class\"> <p>$message</p></div>"; 
+		
+	}
+}
+
+/*--END OF LINE---*/
